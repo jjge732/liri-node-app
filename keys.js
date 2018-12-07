@@ -8,3 +8,7 @@ exports.spotify = {
 exports.bands = {
     id: process.env.BANDS_API_KEY
 }
+
+exports.movies = {
+    id: process.env.OMDB_KEY
+}
