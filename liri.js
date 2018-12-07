@@ -14,8 +14,7 @@ const options = ['concert-this', 'spotify-this-song', 'movie-this'];
 const getData = (userChoice = 'do-what-it-says', search = '') => {
     switch (userChoice) {
         case options[0]:
-            let bandsKey = keys.bands.id;
-            axios.get(`https://rest.bandsintown.com/artists/${search}/events?app_id=${bandsKey}`)
+            axios.get(`https://rest.bandsintown.com/artists/${search}/events?app_id=${keys.bands.id}`)
             .then(res => {
                 if (res.data[0]) {
                     let output = '\n\n\t' + res.data[0].venue.name + '\n\t' + res.data[0].venue.city + ', ' + res.data[0].venue.region + '\n\t' + moment(res.data[0].datetime).format('MMMM Do, YYYY');
@@ -35,7 +34,7 @@ const getData = (userChoice = 'do-what-it-says', search = '') => {
 
         case options[1]:   //fix default
             if (!search) {
-                search = 'the sign';
+                search = 'The Sign Ace of Base';
             }
             spotify.search({type: 'track', query: search}).then(res => {
                 let output = '\n\n\tArtist(s):';
@@ -60,8 +59,7 @@ const getData = (userChoice = 'do-what-it-says', search = '') => {
             if (!search) {
                 search = 'Mr. Nobody';
             }
-            let movieKey = keys.movies.id;
-            axios.get(`http://www.omdbapi.com/?apikey=${movieKey}&t=${search}`)
+            axios.get(`http://www.omdbapi.com/?apikey=${keys.movies.id}&t=${search}`)
             .then(res =>{
                 let output = '\n\n\tTitle: ' + res.data.Title;
                 output+= '\n\tYear of Release: ' + res.data.Year;
@@ -121,6 +119,8 @@ if (!process.argv[3]) {
                 }).catch(err => {
                     console.log(err);
                 })
+            } else if (process.argv[2] && process.argv[2] === 'spotify-this-song') {
+                getData('spotify-this-song')
             } else {
                 getData();
             }
