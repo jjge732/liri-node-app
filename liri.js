@@ -5,12 +5,15 @@ const Spotify = require('node-spotify-api');
 const axios = require('axios');
 const moment = require('moment');
 const keys = require('./keys');
+const inquirer = require('inquirer');
 
-let spotify = new Spotify(keys.spotify);
+const spotify = new Spotify(keys.spotify);
 
-const getData = (userChoice, search) => {
+const options = ['concert-this', 'spotify-this-song', 'movie-this'];
+
+const getData = (userChoice = 'do-what-it-says', search = '') => {
     switch (userChoice) {
-        case 'concert-this':
+        case options[0]:
             let bandsKey = keys.bands.id;
             axios.get(`https://rest.bandsintown.com/artists/${search}/events?app_id=${bandsKey}`)
             .then(res => {
@@ -30,7 +33,7 @@ const getData = (userChoice, search) => {
             })
             break;
 
-        case 'spotify-this-song':   //fix default
+        case options[1]:   //fix default
             if (!search) {
                 search = 'the sign';
             }
@@ -53,7 +56,7 @@ const getData = (userChoice, search) => {
             })
             break;
 
-        case 'movie-this':
+        case options[2]:
             if (!search) {
                 search = 'Mr. Nobody';
             }
@@ -80,6 +83,7 @@ const getData = (userChoice, search) => {
             break;
 
         case 'do-what-it-says':
+        console.log('Reading file "random.txt"')
             fs.readFile('random.txt', 'utf8', (err, res) => {
                 if (err) {
                     console.log(err);
@@ -93,9 +97,40 @@ const getData = (userChoice, search) => {
     }
 }
 
-let query = process.argv[3];
-for (let i = 4; process.argv[i]; i++) {
-    query += '+' + process.argv[i];
+if (!process.argv[3]) {
+    inquirer.prompt([{
+            type: 'confirm',
+            message: 'Would you like me to walk you through the process?',
+            name: 'confirm'
+        }]).then(res => {
+            if (res.confirm) {
+                inquirer.prompt([
+                    {
+                        type: 'list',
+                        message: 'Which action would you like me to perform?',
+                        choices: options,
+                        name: 'action'
+                    },
+                    {
+                        type: 'text',
+                        message: 'For what would you like to search?',
+                        name: 'query'
+                    }
+                ]).then(data => {
+                    getData(data.action, data.query);
+                }).catch(err => {
+                    console.log(err);
+                })
+            } else {
+                getData();
+            }
+        }).catch( err => {
+            console.log(err);
+        });
+} else {
+    let query = process.argv[3];
+    for (let i = 4; process.argv[i]; i++) {
+        query += '+' + process.argv[i];
+    }
+    getData(process.argv[2], query);
 }
-
-getData(process.argv[2], query);
