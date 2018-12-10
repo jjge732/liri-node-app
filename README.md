@@ -15,3 +15,7 @@ Liri (Language Interpretation and Recognition Interface) combines Axios API sear
 [My LIRI App](https://www.youtube.com/watch?v=zHy71BxLyD4)
 - created with Screencastify
 - edited with ActivePresenter
+
+### Screenshots
+![Screenshot 1](images\my-liri-screenshots-1.JPG)
+![Screenshot 2](images\my-liri-screenshots-2.JPG)
