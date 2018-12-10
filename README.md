@@ -17,5 +17,5 @@ Liri (Language Interpretation and Recognition Interface) combines Axios API sear
 - edited with ActivePresenter
 
 ### Screenshots
-![Screenshot 1](images\my-liri-screenshots-1.JPG)
-![Screenshot 2](images\my-liri-screenshots-2.JPG)
+![Screenshot 1](images/my-liri-screenshots-1.JPG)
+![Screenshot 2](images/my-liri-screenshots-2.JPG)
