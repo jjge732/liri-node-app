@@ -1,4 +1,4 @@
-# liri-node-app
+# My LIRI App
 
 ### About
 Liri (Language Interpretation and Recognition Interface) combines Axios API searches for bandsintown and OMDB with a Spotify search npm to create a one-stop music and film search application.
