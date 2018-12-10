@@ -14,10 +14,13 @@ const options = ['concert-this', 'spotify-this-song', 'movie-this'];
 const getData = (userChoice = 'do-what-it-says', search = '') => {
     switch (userChoice) {
         case options[0]:
+        if (!search) {
+            search = 'Dua Lipa';
+        }
             axios.get(`https://rest.bandsintown.com/artists/${search}/events?app_id=${keys.bands.id}`)
             .then(res => {
                 if (res.data[0]) {
-                    let output = '\n\n\t' + res.data[0].venue.name + '\n\t' + res.data[0].venue.city + ', ' + res.data[0].venue.region + '\n\t' + moment(res.data[0].datetime).format('MMMM Do, YYYY');
+                    let output = '\n\n\t' + search + ' has a concert at ' + res.data[0].venue.name + ' in ' + res.data[0].venue.city + ', ' + res.data[0].venue.region + ' on ' + moment(res.data[0].datetime).format('MMMM Do, YYYY');
                     console.log(output);
                     fs.appendFile('log.txt', output, err => {
                         if (err) {
@@ -25,21 +28,25 @@ const getData = (userChoice = 'do-what-it-says', search = '') => {
                         }
                     })
                 } else {
-                    console.log('No upcoming concerts');
+                    console.log(`${search} has no upcoming concerts.`);
                 }
             }).catch(err => {
                 console.log(err);
             })
             break;
 
-        case options[1]:   //fix default
+        case options[1]:
             if (!search) {
                 search = 'The Sign Ace of Base';
             }
-            spotify.search({type: 'track', query: search}).then(res => {
+            spotify.search({type: 'track', query: search, limit: 1}).then(res => {
                 let output = '\n\n\tArtist(s):';
                 for (let i = 0; res.tracks.items[0].artists[i]; i++) {
-                    output += '\n\t\t' + res.tracks.items[0].artists[i].name;
+                    if (i === 0) {
+                        output += ' ' + res.tracks.items[0].artists[i].name;
+                    } else {
+                        output += ', ' + res.tracks.items[0].artists[i].name;
+                    }
                 }
                 output += '\n\tSong: ' + res.tracks.items[0].name;
                 output += '\n\tLink: ' + res.tracks.items[0].external_urls.spotify;
@@ -119,8 +126,8 @@ if (!process.argv[3]) {
                 }).catch(err => {
                     console.log(err);
                 })
-            } else if (process.argv[2] && process.argv[2] === 'spotify-this-song') {
-                getData('spotify-this-song')
+            } else if (process.argv[2]) {
+                getData(process.argv[2])
             } else {
                 getData();
             }
